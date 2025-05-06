@@ -78,14 +78,9 @@ export async function updateProduct(data: ProductData, id: Product["id"]) {
       price: +data.price,
       availability: toBoolean(data.availability.toString()),
     });
-
     if (result.success) {
       const url = `${import.meta.env.VITE_API_URL}/api/products/${id}`;
-      await axios.put(url, {
-        name: result.output.name,
-        price: result.output.price,
-        availability: result.output.availability
-      })
+      await axios.put(url, result.output)
     }
   } catch (error) {
     console.log(error);
