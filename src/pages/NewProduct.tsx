@@ -3,7 +3,7 @@ import ErrorMessage from "../components/ErrorMessage";
 import { addProduct } from "../services/ProductService";
 import ProductForm from "../components/ProductForm";
 
-export async function action({ request } : ActionFunctionArgs) {
+export async function action({ request, params } : ActionFunctionArgs) {
   const data = Object.fromEntries(await request.formData());
 
   let error = "";
