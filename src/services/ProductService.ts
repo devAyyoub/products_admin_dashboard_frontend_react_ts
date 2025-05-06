@@ -1,4 +1,4 @@
-import { safeParse, parse, pipe, transform } from "valibot";
+import { safeParse } from "valibot";
 import {
   DraftProductSchema,
   Product,
@@ -76,13 +76,17 @@ export async function updateProduct(data: ProductData, id: Product["id"]) {
       id: id,
       name: data.name,
       price: +data.price,
-      availability: toBoolean(data.availability.toString())
-    })
+      availability: toBoolean(data.availability.toString()),
+    });
 
-    if(result.success) {
-      
+    if (result.success) {
+      const url = `${import.meta.env.VITE_API_URL}/api/products/${id}`;
+      await axios.put(url, {
+        name: result.output.name,
+        price: result.output.price,
+        availability: result.output.availability
+      })
     }
-
   } catch (error) {
     console.log(error);
   }
