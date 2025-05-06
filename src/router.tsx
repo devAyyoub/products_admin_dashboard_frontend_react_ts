@@ -20,7 +20,7 @@ export const router = createBrowserRouter([
         action: newProductAction
       },
       {
-        path: "productos/:id/edit", // ROA pattern
+        path: "productos/:id/editar", // ROA pattern
         element: <EditProduct />,
         action: editProductAction
       }

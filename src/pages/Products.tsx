@@ -11,7 +11,6 @@ export async function loader() {
 
 export default function Products() {
   const products = useLoaderData() as Product[];
-  console.log(products);
 
   return (
     <>
@@ -35,7 +34,7 @@ export default function Products() {
             </tr>
           </thead>
           <tbody>
-            {products.map(product => (
+            {products.map((product) => (
               <ProductDetails key={product.id} product={product} />
             ))}
           </tbody>
