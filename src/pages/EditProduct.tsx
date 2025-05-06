@@ -4,12 +4,25 @@ import {
   useActionData,
   ActionFunctionArgs,
   redirect,
-  useLocation,
+  LoaderFunctionArgs,
+  useLoaderData,
 } from "react-router-dom";
 import ErrorMessage from "../components/ErrorMessage";
-import { addProduct } from "../services/ProductService";
+import { getProductById, updateProduct } from "../services/ProductService";
+import { Product } from "../types";
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function loader({ params }: LoaderFunctionArgs) {
+  if (params.id !== undefined) {
+    const product = await getProductById(+params.id);
+    if (!product) {
+      //throw new Response("", {status: 404, statusText: 'No encontrado'});
+      return redirect("/");
+    }
+    return product;
+  }
+}
+
+export async function action({ request, params }: ActionFunctionArgs) {
   const data = Object.fromEntries(await request.formData());
 
   let error = "";
@@ -19,15 +32,20 @@ export async function action({ request }: ActionFunctionArgs) {
   if (error.length) {
     return error;
   }
-
-  await addProduct(data);
-
-  return redirect("/");
+  if (params.id !== undefined) {
+    await updateProduct(data, +params.id);
+    return redirect("/");
+  }
 }
 
+const availabilityOptions = [
+  { name: "Disponible", value: true },
+  { name: "No Disponible", value: false },
+];
+
 export default function EditProduct() {
-    const error = useActionData() as string;
-    let {state} = useLocation();  
+  const error = useActionData() as string;
+  const product = useLoaderData() as Product;
 
   return (
     <>
@@ -52,7 +70,7 @@ export default function EditProduct() {
             className="mt-2 block w-full p-3 bg-gray-50"
             placeholder="Nombre del Producto"
             name="name"
-            defaultValue={state.product.name}
+            defaultValue={product.name}
           />
         </div>
         <div className="mb-4">
@@ -65,8 +83,25 @@ export default function EditProduct() {
             className="mt-2 block w-full p-3 bg-gray-50"
             placeholder="Precio Producto. ej. 200, 300"
             name="price"
-            defaultValue={state.product.price}
+            defaultValue={product.price}
           />
+        </div>
+        <div className="mb-4">
+          <label className="text-gray-800" htmlFor="availability">
+            Disponibilidad:
+          </label>
+          <select
+            id="availability"
+            className="mt-2 block w-full p-3 bg-gray-50"
+            name="availability"
+            defaultValue={product?.availability.toString()}
+          >
+            {availabilityOptions.map((option) => (
+              <option key={option.name} value={option.value.toString()}>
+                {option.name}
+              </option>
+            ))}
+          </select>
         </div>
         <input
           type="submit"
