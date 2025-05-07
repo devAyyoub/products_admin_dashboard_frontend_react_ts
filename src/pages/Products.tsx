@@ -8,6 +8,9 @@ export async function loader() {
 
   return products;
 }
+export async function action() {
+  console.log('desde action')
+}
 
 export default function Products() {
   const products = useLoaderData() as Product[];

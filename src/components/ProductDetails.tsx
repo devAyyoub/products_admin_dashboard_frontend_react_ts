@@ -15,7 +15,7 @@ type ProductDetailsProps = {
 export async function action({ params }: ActionFunctionArgs) {
   if (params.id !== undefined) {
     await deleteProduct(+params.id);
-    return redirect('/');
+    return redirect("/");
   }
 }
 
@@ -29,7 +29,16 @@ export default function ProductDetails(product: ProductDetailsProps) {
         {formatCurrency(product.product.price)}
       </td>
       <td className="p-3 text-lg text-gray-800">
-        {product.product.availability ? "Disponble" : "No disponible"}
+        <form action="" method="post">
+          <button
+            type="button"
+            name="availability"
+            value={product.product.availability.toString()}
+            className={`${product.product.availability ? 'text-black' : 'text-red-600'} rounded-lg p-2 text-xs uppercase font-bold w-full border border-black-100 hover:cursor-pointer`}
+          >
+            {product.product.availability ? "Disponble" : "No disponible"}
+          </button>
+        </form>
       </td>
       <td className="p-3 text-lg text-gray-800 ">
         <div className="flex gap-2 items-center">
@@ -44,8 +53,8 @@ export default function ProductDetails(product: ProductDetailsProps) {
             className="w-full"
             action={`productos/${product.product.id}/eliminar`}
             onSubmit={(e) => {
-              if(!confirm('Eliminar ?')) {
-                e.preventDefault()
+              if (!confirm("Eliminar ?")) {
+                e.preventDefault();
               }
             }}
           >
